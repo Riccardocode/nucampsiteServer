@@ -1,44 +1,46 @@
 const express = require('express');
 const promotionRouter = express.Router();
+const Promotion = require('../models/promotion');
 
 promotionRouter.route('/')
-.all((req,res,next)=>{
-    res.statusCode =200;
-    res.setHeader('Content-Type','text/plain');
-    next();
-})
-.get((req,res) =>{
-    res.end('Will send all the promotions to you');
+.get((req,res,next)=>{
+    Promotion.find()
+    .then(promotions => res.status(200).json(promotions))
+    .catch(err => next(err))
 })
 .post((req,res) =>{
-    res.end(`Will add the promotion: ${req.body.name} with description: ${req.body.description}`);
+    Promotion.create(res.body)
+    .then(promotion => res.status(200).json(promotion))
+    .catch(err => next(err))
 })
 .put((req,res)=>{
     res.statusCode=403;
     res.end('PUT operation not supported on /promotions');
 })
 .delete((req,res)=>{
-    res.end('Deleting all promotions');
+    Promotion.deleteMany()
+    .then(promotions => res.status(200).json(promotions))
+    .catch(err => next(err))
 });
 
 promotionRouter.route('/:promotionId')
-.all((req,res,next)=>{
-    res.statusCode
-    res.setHeader('Content-type','text/plain');
-    next();
-})
 .get((req,res) =>{
-    res.end(`Will send promotion with id:${req.params.promotionId}`);
+    Promotion.findById(req.params.promotionId)
+    .then(promotion => res.status(200).json(promotion))
+    .catch(err => next(err))
 })
 .post((req,res) =>{
     res.end(`POST operation not support on /promotions/:promotionId`);
 })
 .put((req,res)=>{
-    res.statusCode=403;
-    res.end(`Will update the promotion with new name: ${req.body.name} and description:${req.body.description}`);
+    Promotion.findByIdAndUpdate(req.params.promotionId,req.body,{new:true})
+    .then(promotion => res.status(200).json(promotion))
+    .catch(err => next(err))
 })
-.delete((req,res)=>{
-    res.end(`Deleting promotion with id ${req.params.promotionId}`);
+.delete((req,res, next)=>{
+    Promotion.findByIdAndDelete(req.params.promotionId)
+    .then(promotion => res.status(200).json(promotion))
+    .catch(err => next(err))
 });
 
 
