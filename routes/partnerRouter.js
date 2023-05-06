@@ -8,8 +8,8 @@ partnerRouter.route('/')
     .then(partners => res.status(200).json(partners))
     .catch(err => next(err))
 })
-.post((req,res) =>{
-    Partner.create(res.body)
+.post((req,res,next) =>{
+    Partner.create(req.body)
     .then(partner => res.status(200).json(partner))
     .catch(err => next(err))
 })
@@ -17,14 +17,14 @@ partnerRouter.route('/')
     res.statusCode=403;
     res.end('PUT operation not supported on /partners');
 })
-.delete((req,res)=>{
+.delete((req,res,next)=>{
     Partner.deleteMany()
     .then(partners => res.status(200).json(partners))
     .catch(err => next(err))
 });
 
 partnerRouter.route('/:partnerId')
-.get((req,res) =>{
+.get((req,res,next) =>{
     Partner.findById(req.params.partnerId)
     .then(partner => res.status(200).json(partner))
     .catch(err => next(err))
@@ -32,7 +32,7 @@ partnerRouter.route('/:partnerId')
 .post((req,res) =>{
     res.end(`POST operation not support on /partners/:partnerId`);
 })
-.put((req,res)=>{
+.put((req,res,next)=>{
     Partner.findByIdAndUpdate(req.params.partnerId,req.body,{new:true})
     .then(partner => res.status(200).json(partner))
     .catch(err => next(err))

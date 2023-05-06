@@ -8,8 +8,8 @@ promotionRouter.route('/')
     .then(promotions => res.status(200).json(promotions))
     .catch(err => next(err))
 })
-.post((req,res) =>{
-    Promotion.create(res.body)
+.post((req,res,next) =>{
+    Promotion.create(req.body)
     .then(promotion => res.status(200).json(promotion))
     .catch(err => next(err))
 })
@@ -17,14 +17,14 @@ promotionRouter.route('/')
     res.statusCode=403;
     res.end('PUT operation not supported on /promotions');
 })
-.delete((req,res)=>{
+.delete((req,res,next)=>{
     Promotion.deleteMany()
     .then(promotions => res.status(200).json(promotions))
     .catch(err => next(err))
 });
 
 promotionRouter.route('/:promotionId')
-.get((req,res) =>{
+.get((req,res,next) =>{
     Promotion.findById(req.params.promotionId)
     .then(promotion => res.status(200).json(promotion))
     .catch(err => next(err))
@@ -32,7 +32,7 @@ promotionRouter.route('/:promotionId')
 .post((req,res) =>{
     res.end(`POST operation not support on /promotions/:promotionId`);
 })
-.put((req,res)=>{
+.put((req,res,next)=>{
     Promotion.findByIdAndUpdate(req.params.promotionId,req.body,{new:true})
     .then(promotion => res.status(200).json(promotion))
     .catch(err => next(err))
